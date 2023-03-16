@@ -111,13 +111,11 @@ pushd debian-riscv64/rootfs
   fi
 popd
 
-pushd debian-riscv64/boot
-  sudo mkdir extlinux
-  sudo cp ../extlinux.conf extlinux
-  sudo cp ../initrd extlinux/initrd-$KERNEL_VER.img
-  sudo cp ../../linux-stable/arch/riscv/boot/Image extlinux/image-$KERNEL_VER
-  sudo cp ../../workspace/boot.elf boot.elf
-popd
+sudo mkdir debian-riscv64/boot/extlinux
+sudo cp debian-riscv64/extlinux.conf debian-riscv64/boot/extlinux
+sudo cp debian-riscv64/initrd debian-riscv64/boot/extlinux/initrd-$KERNEL_VER.img
+sudo cp linux-stable/arch/riscv/boot/Image debian-riscv64/boot/extlinux/image-$KERNEL_VER
+sudo cp workspace/boot.elf debian-riscv64/boot/boot.elf
 
 sudo chown root:root debian-riscv64/rootfs
 sudo chmod 755 debian-riscv64/rootfs
@@ -125,11 +123,11 @@ sudo chmod 755 debian-riscv64/rootfs
 echo
 echo "Boot partition:"
 df debian-riscv64/boot
-ls -l debian-riscv64/boot
+sudo ls -l debian-riscv64/boot
 echo
 echo "Root partition:"
 df debian-riscv64/rootfs
-ls -l debian-riscv64/rootfs
+sudo ls -l debian-riscv64/rootfs
 echo
 
 if [ ! -z "$RSYNC_BOOT" ] ; then
