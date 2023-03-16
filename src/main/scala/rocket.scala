@@ -320,6 +320,13 @@ class Rocket64b2s extends Config(
   new WithNoSlavePort ++
   new BaseConfig)
 
+/* Mix of cores */
+class Rocket64bmix extends Config(
+  new WithNBreakpoints(8) ++
+  new WithNBigCores(4)    ++
+  new WithNSmallCores(4)  ++
+  new RocketBaseConfig)
+
 /*----------------- Sonic BOOM   ---------------*/
 
 class Rocket64w1 extends Config(
