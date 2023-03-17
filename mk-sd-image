@@ -41,12 +41,8 @@ make debian-riscv64/initrd debian-riscv64/rootfs.tar.gz
 
 # --- Build BBL and Linux ---
 
-if [ ! -f workspace/boot.elf ] ; then
-  make bootloader
-fi
-if [ ! -f linux-stable/arch/riscv/boot/Image ] ; then
-  make linux
-fi
+make bootloader
+make linux
 
 # --- build SD card image ---
 
@@ -131,7 +127,7 @@ sudo ls -l debian-riscv64/rootfs
 echo
 
 if [ ! -z "$RSYNC_BOOT" ] ; then
-  rsync -r --delete debian-riscv64/boot/ $RSYNC_BOOT
+  sudo rsync -r --delete debian-riscv64/boot/ $RSYNC_BOOT
 fi
 
 # According to docs, don't need to run sync before umount.
