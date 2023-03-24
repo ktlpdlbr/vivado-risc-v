@@ -17,8 +17,8 @@ include board/$(BOARD)/Makefile.inc
 apt-install:
 	sudo apt update
 	sudo apt upgrade
-	sudo apt install default-jdk device-tree-compiler python curl gawk \
-	 libtinfo5 libmpc-dev libssl-dev gcc gcc-riscv64-linux-gnu gcc-8-riscv64-linux-gnu flex bison
+	sudo apt install default-jdk device-tree-compiler python3 curl gawk \
+	 libtinfo5 libmpc-dev libssl-dev gcc gcc-riscv64-linux-gnu gcc-9-riscv64-linux-gnu flex bison
 
 apt-install-qemi:
 	sudo apt install qemu-system-misc opensbi u-boot-qemu qemu-utils
@@ -73,6 +73,20 @@ linux: linux-stable/arch/riscv/boot/Image
 
 CROSS_COMPILE_LINUX = /usr/bin/riscv64-linux-gnu-
 
+#workspace/patch-linux-done: patches/linux.patch patches/fpga-axi-sdc.c patches/fpga-axi-eth.c patches/linux.config
+#	if [ -s patches/linux.patch ] ; then cd linux-stable && ( git apply -R --check ../patches/linux.patch 2>/dev/null || git apply ../patches/linux.patch ) ; fi
+#	cp -p patches/fpga-axi-eth.c  linux-stable/drivers/net/ethernet
+#	cp -p patches/fpga-axi-sdc.c  linux-stable/drivers/mmc/host
+#	cp -p patches/fpga-axi-uart.c linux-stable/drivers/tty/serial
+#	cp -p patches/linux.config linux-stable/.config
+#	cp -p patches/linux.config linux-stable/xilinx.config
+#	mkdir -p workspace && touch workspace/patch-linux-done
+#
+#linux-stable/arch/riscv/boot/Image: workspace/patch-linux-done
+#    # make -C linux-stable ARCH=riscv CROSS_COMPILE=$(CROSS_COMPILE_LINUX) oldconfig
+#	KCONFIG_CONFIG=xilinx.config make -C linux-stable ARCH=riscv CROSS_COMPILE=$(CROSS_COMPILE_LINUX) defconfig
+#	make -C linux-stable ARCH=riscv CROSS_COMPILE=$(CROSS_COMPILE_LINUX) all
+
 workspace/patch-linux-done: patches/linux.patch patches/fpga-axi-sdc.c patches/fpga-axi-eth.c patches/linux.config
 	if [ -s patches/linux.patch ] ; then cd linux-stable && ( git apply -R --check ../patches/linux.patch 2>/dev/null || git apply ../patches/linux.patch ) ; fi
 	cp -p patches/fpga-axi-eth.c  linux-stable/drivers/net/ethernet
@@ -121,7 +135,7 @@ u-boot/u-boot-nodtb.bin: workspace/patch-u-boot-done $(U_BOOT_SRC)
 	make -C u-boot CROSS_COMPILE=$(CROSS_COMPILE_LINUX) BOARD=vivado_riscv64 vivado_riscv64_config
 	make -C u-boot \
 	  BOARD=vivado_riscv64 \
-	  CC=$(CROSS_COMPILE_LINUX)gcc-8 \
+	  CC=$(CROSS_COMPILE_LINUX)gcc-9 \
 	  CROSS_COMPILE=$(CROSS_COMPILE_LINUX) \
 	  KCFLAGS='-O1 -gno-column-info' \
 	  all
