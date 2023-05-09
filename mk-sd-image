@@ -42,7 +42,7 @@ make debian-riscv64/initrd debian-riscv64/rootfs.tar.gz
 # --- Build BBL and Linux ---
 
 make bootloader
-make linux
+make linux -j
 
 # --- build SD card image ---
 
