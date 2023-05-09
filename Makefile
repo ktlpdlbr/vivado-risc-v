@@ -66,6 +66,11 @@ debian-riscv64/rootfs.tar.gz:
 	  -o $@.tmp
 	mv $@.tmp $@
 
+# --- edit Linux config ---
+linux-menuconfig: workspace/patch-linux-done
+	make -C linux-stable KCPPFLAGS="$(CROSS_COMPILE_LINUX_FLAGS)" KAFLAGS="$(CROSS_COMPILE_LINUX_FLAGS)" KCFLAGS="$(CROSS_COMPILE_LINUX_FLAGS)" LDFLAGS_MODULE="$(CROSS_COMPILE_LINUX_FLAGS)" ARCH=riscv CROSS_COMPILE=$(CROSS_COMPILE_LINUX) menuconfig
+	cp -p linux-stable/.config patches/linux.config
+
 # --- build Linux kernel ---
 
 .PHONY: linux
@@ -82,8 +87,8 @@ workspace/patch-linux-done: patches/linux.patch patches/fpga-axi-sdc.c patches/f
 	mkdir -p workspace && touch workspace/patch-linux-done
 
 linux-stable/arch/riscv/boot/Image: workspace/patch-linux-done
-	make -C linux-stable ARCH=riscv CROSS_COMPILE=$(CROSS_COMPILE_LINUX) oldconfig
-	make -C linux-stable ARCH=riscv CROSS_COMPILE=$(CROSS_COMPILE_LINUX) all
+	make -C linux-stable KCPPFLAGS="$(CROSS_COMPILE_LINUX_FLAGS)" KAFLAGS="$(CROSS_COMPILE_LINUX_FLAGS)" KCFLAGS="$(CROSS_COMPILE_LINUX_FLAGS)" LDFLAGS_MODULE="$(CROSS_COMPILE_LINUX_FLAGS)" ARCH=riscv CROSS_COMPILE=$(CROSS_COMPILE_LINUX) oldconfig
+	make -C linux-stable KCPPFLAGS="$(CROSS_COMPILE_LINUX_FLAGS)" KAFLAGS="$(CROSS_COMPILE_LINUX_FLAGS)" KCFLAGS="$(CROSS_COMPILE_LINUX_FLAGS)" LDFLAGS_MODULE="$(CROSS_COMPILE_LINUX_FLAGS)" ARCH=riscv CROSS_COMPILE=$(CROSS_COMPILE_LINUX) all
 
 
 # --- build U-Boot ---
@@ -170,6 +175,10 @@ else
   CROSS_COMPILE_NO_OS_TOOLS = $(realpath workspace/gcc/riscv/bin)/riscv64-unknown-elf-
   CROSS_COMPILE_NO_OS_FLAGS = -march=rv64imac -mabi=lp64
 endif
+
+CROSS_COMPILE_OS_FLAGS = -march=rv64ima -mabi=lp64
+CROSS_COMPILE_UBOOT_FLAGS = $(CROSS_COMPILE_OS_FLAGS) -O1 -gno-column-info
+CROSS_COMPILE_LINUX_FLAGS = $(CROSS_COMPILE_OS_FLAGS)
 
 ifeq ($(shell echo $$(($(MEMORY_SIZE) <= 0x80000000))),1)
   MEMORY_ADDR_RANGE32 = 0x80000000 $(MEMORY_SIZE)
