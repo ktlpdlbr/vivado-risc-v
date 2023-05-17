@@ -97,9 +97,14 @@ sudo mount ${SD_LOOP}p1 debian-riscv64/boot
 sudo mount ${SD_LOOP}p2 debian-riscv64/rootfs
 
 pushd debian-riscv64/rootfs
-  if [ -z "$SD_SWAP_SIZE" ] ; then
+  if [ "$ROOTFS_IMAGE" == "buildroot" ] ; then
+    echo "Using buildroot rootfs"
+    sudo tar xf ../../buildroot/output/images/rootfs.tar
+  elif [ -z "$SD_SWAP_SIZE" ] ; then
+    echo "Using debian rootfs"
     sudo tar xzf ../rootfs.tar.gz
   else
+    echo "Using debian rootfs"
     sudo tar --exclude=swapfile -xzf ../rootfs.tar.gz
     sudo fallocate -l ${SD_SWAP_SIZE}M swapfile
     sudo chmod 600 swapfile
