@@ -6,6 +6,7 @@ endif
 
 BOARD ?= nexys-video
 CONFIG ?= rocket64b2
+ROOTFS_IMAGE ?= debian
 HW_SERVER_ADDR ?= localhost:3121
 JAVA_OPTIONS ?=
 CFG_FORMAT ?= mcs
@@ -54,17 +55,31 @@ workspace/gcc/riscv: workspace/gcc/tools.tar.gz
 
 debian-riscv64/initrd:
 	mkdir -p debian-riscv64
-	curl --netrc --location --header 'Accept: application/octet-stream' \
-	  https://api.github.com/repos/eugene-tarassov/vivado-risc-v/releases/assets/83694315 \
-	  -o $@.tmp
-	mv $@.tmp $@
+	if [ "$ROOTFS_IMAGE" == "debian" ] ; then \
+	    curl --netrc --location --header 'Accept: application/octet-stream' \
+	      https://api.github.com/repos/eugene-tarassov/vivado-risc-v/releases/assets/83694315 \
+	      -o $@.tmp \
+	    && mv $@.tmp $@ ; \
+	elif [ "$ROOTFS_IMAGE" == "buildroot" ] \
+	    cp -p patches/buildroot.config buildroot/.config \
+		make -C buildroot \
+	else \
+	    echo "$ROOTFS_IMAGE is not a valid rootfs!" \
+	fi
 
 debian-riscv64/rootfs.tar.gz:
 	mkdir -p debian-riscv64
-	curl --netrc --location --header 'Accept: application/octet-stream' \
-	  https://api.github.com/repos/eugene-tarassov/vivado-risc-v/releases/assets/83694317 \
-	  -o $@.tmp
-	mv $@.tmp $@
+	if [ "$ROOTFS_IMAGE" == "debian" ] ; then \
+	    curl --netrc --location --header 'Accept: application/octet-stream' \
+	      https://api.github.com/repos/eugene-tarassov/vivado-risc-v/releases/assets/83694317 \
+	      -o $@.tmp \
+	    && mv $@.tmp $@ ; \
+	elif [ "$ROOTFS_IMAGE" == "buildroot" ] \
+	    cp -p patches/buildroot.config buildroot/.config \
+		make -C buildroot \
+	else \
+	    echo "$ROOTFS_IMAGE is not a valid rootfs!" \
+	fi
 
 # --- edit Linux config ---
 linux-menuconfig: workspace/patch-linux-done
