@@ -290,6 +290,27 @@ class Rocket64b8 extends Config(
   new WithNBigCores(8)    ++
   new RocketBaseConfig)
 
+class Rocket64sf8_nobtb extends Config(
+  new WithNBreakpoints(8) ++
+  new WithNSoftCores(8)    ++
+  new RocketBaseConfig)
+
+class Rocket64sf8 extends Config(
+  new WithNBreakpoints(8) ++
+  new WithNSoftCores(8)    ++
+  new RocketBaseConfig)
+
+class Rocket64sf8_nobtb_reducedfpu extends Config(
+  new WithNBreakpoints(8) ++
+  new WithNSoftCores(8)    ++
+  new RocketBaseConfig)
+
+class Rocket64sf8b1 extends Config(
+  new WithNBreakpoints(8) ++
+  new WithNBigCores(1) ++
+  new WithNSoftCores(8)    ++
+  new RocketBaseConfig)
+
 class Rocket64b16m extends Config(
   new WithNBreakpoints(4) ++
   new WithNBigCores(16)   ++
@@ -323,8 +344,9 @@ class Rocket64b2s extends Config(
 /* Mix of cores */
 class Rocket64bmix extends Config(
   new WithNBreakpoints(8) ++
-  new WithNBigCores(4)    ++
-  new WithNSmallCores(4)  ++
+  new boom.common.WithNSmallBooms(1) ++
+  new WithNBigCores(2)   ++
+  new WithNSoftCores(3)  ++
   new RocketBaseConfig)
 
 /*----------------- Sonic BOOM   ---------------*/
