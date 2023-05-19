@@ -18,8 +18,8 @@ include board/$(BOARD)/Makefile.inc
 apt-install:
 	sudo apt update
 	sudo apt upgrade
-	sudo apt install default-jdk device-tree-compiler python curl gawk \
-	 libtinfo5 libmpc-dev libssl-dev gcc gcc-riscv64-linux-gnu gcc-8-riscv64-linux-gnu flex bison
+	sudo apt install default-jdk device-tree-compiler python3 curl gawk \
+	 libtinfo5 libmpc-dev libssl-dev gcc gcc-riscv64-linux-gnu gcc-9-riscv64-linux-gnu flex bison
 
 apt-install-qemi:
 	sudo apt install qemu-system-misc opensbi u-boot-qemu qemu-utils
@@ -141,7 +141,7 @@ u-boot/u-boot-nodtb.bin: workspace/patch-u-boot-done $(U_BOOT_SRC)
 	make -C u-boot CROSS_COMPILE=$(CROSS_COMPILE_LINUX) BOARD=vivado_riscv64 vivado_riscv64_config
 	make -C u-boot \
 	  BOARD=vivado_riscv64 \
-	  CC=$(CROSS_COMPILE_LINUX)gcc-8 \
+	  CC=$(CROSS_COMPILE_LINUX)gcc-9 \
 	  CROSS_COMPILE=$(CROSS_COMPILE_LINUX) \
 	  KCFLAGS='-O1 -gno-column-info' \
 	  all
