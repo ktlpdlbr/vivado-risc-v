@@ -54,18 +54,18 @@ workspace/gcc/riscv: workspace/gcc/tools.tar.gz
 	touch $@
 
 debian-riscv64/initrd:
-	mkdir -p debian-riscv64
-	if [ "$(ROOTFS_IMAGE)" == "debian" ]; then \
+	mkdir -p debian-riscv64; \
+	bash -c "if [[ \"$(ROOTFS_IMAGE)\" == \"debian\" ]]; then \
 	    curl --netrc --location --header 'Accept: application/octet-stream' \
 	      https://api.github.com/repos/eugene-tarassov/vivado-risc-v/releases/assets/83694315 \
 	      -o $@.tmp \
 	    && mv $@.tmp $@ ; \
-	elif [ "$(ROOTFS_IMAGE)" == "buildroot" ]; then \
+	elif [[ \"$(ROOTFS_IMAGE)\" == \"buildroot\" ]]; then \
 	    cp -p patches/buildroot.config buildroot/.config \
 	    && make -C buildroot -j ; \
 	else \
-	    echo "${ROOTFS_IMAGE} is not a valid rootfs!" ; \
-	fi
+	    echo \"${ROOTFS_IMAGE} is not a valid rootfs!\" ; \
+	fi"
 
 debian-riscv64/rootfs.tar.gz:
 	mkdir -p debian-riscv64
