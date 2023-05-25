@@ -62,24 +62,24 @@ debian-riscv64/initrd:
 	    && mv $@.tmp $@ ; \
 	elif [[ \"$(ROOTFS_IMAGE)\" == \"buildroot\" ]]; then \
 	    cp -p patches/buildroot.config buildroot/.config \
-	    && make -C buildroot -j ; \
+	    && make -C buildroot -j && echo \"make is using buildroot\" ; \
 	else \
 	    echo \"${ROOTFS_IMAGE} is not a valid rootfs!\" ; \
 	fi"
 
 debian-riscv64/rootfs.tar.gz:
-	mkdir -p debian-riscv64
-	if [ "$(ROOTFS_IMAGE)" == "debian" ]; then \
+	mkdir -p debian-riscv64; \
+	bash -c "if [ \"$(ROOTFS_IMAGE)\" == \"debian\" ]; then \
 	    curl --netrc --location --header 'Accept: application/octet-stream' \
 	      https://api.github.com/repos/eugene-tarassov/vivado-risc-v/releases/assets/83694317 \
 	      -o $@.tmp \
 	    && mv $@.tmp $@ ; \
-	elif [ "$(ROOTFS_IMAGE)" == "buildroot" ]; then \
+	elif [ \"$(ROOTFS_IMAGE)\" == \"buildroot\" ]; then \
 	    cp -p patches/buildroot.config buildroot/.config \
-	    && make -C buildroot -j ; \
+	    && make -C buildroot -j && echo \"make is using buildroot\" ; \
 	else \
-	    echo "${ROOTFS_IMAGE} is not a valid rootfs!" ; \
-	fi
+	    echo \"${ROOTFS_IMAGE} is not a valid rootfs!\" ; \
+	fi"
 
 # --- edit Linux config ---
 linux-menuconfig: workspace/patch-linux-done
@@ -191,7 +191,7 @@ else
   CROSS_COMPILE_NO_OS_FLAGS = -march=rv64imac -mabi=lp64
 endif
 
-CROSS_COMPILE_OS_FLAGS = -march=rv64imad -mabi=lp64d
+CROSS_COMPILE_OS_FLAGS = -march=rv64ima -mabi=lp64
 CROSS_COMPILE_UBOOT_FLAGS = $(CROSS_COMPILE_OS_FLAGS) -O1 -gno-column-info
 CROSS_COMPILE_LINUX_FLAGS = $(CROSS_COMPILE_OS_FLAGS)
 
