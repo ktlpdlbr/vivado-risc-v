@@ -292,23 +292,19 @@ class Rocket64b8 extends Config(
 
 class Rocket64sf8_nobtb extends Config(
   new WithNBreakpoints(8) ++
-  new WithNSoftCores(8)    ++
   new RocketBaseConfig)
 
 class Rocket64sf8 extends Config(
   new WithNBreakpoints(8) ++
-  new WithNSoftCores(8)    ++
   new RocketBaseConfig)
 
 class Rocket64sf8_nobtb_reducedfpu extends Config(
   new WithNBreakpoints(8) ++
-  new WithNSoftCores(8)    ++
   new RocketBaseConfig)
 
 class Rocket64sf8b1 extends Config(
   new WithNBreakpoints(8) ++
   new WithNBigCores(1) ++
-  new WithNSoftCores(8)    ++
   new RocketBaseConfig)
 
 class Rocket64b16m extends Config(
@@ -344,9 +340,64 @@ class Rocket64b2s extends Config(
 /* Mix of cores */
 class Rocket64bmix extends Config(
   new WithNBreakpoints(8) ++
+  new WithNBig16WayCores(1)   ++
+  new WithNBigCores(1)   ++ //btb,FPU automatically enabled
+  new WithNBig8WayCores(1)   ++
+  new WithNBigNonBlockingCores(1)   ++ //1 MSHR register
+  new WithNBig2NonBlockingCores(1)   ++ //2 MSHR registers
+  new WithNBig2WayCores(1)   ++
+  new RocketBaseConfig) 
+
+  class Rocket64NonblockingCaches extends Config(
+  new WithNBreakpoints(8) ++
   new boom.common.WithNSmallBooms(1) ++
-  new WithNBigCores(2)   ++
-  new WithNSoftCores(3)  ++
+  new WithNBigCores(2)   ++ //btb,FPU automatically enabled
+  new WithNBigNonBlockingCores(1)   ++ //1 MSHR register
+  new WithNBig2NonBlockingCores(1)   ++ //2 MSHR registers
+  new WithNBigNoBTBCores(1)  ++ //btb disabled
+  new WithInclusiveCache  ++ //L2 Cache enabled
+  new RocketBaseConfig)
+
+class Rocket64bmix3 extends Config(
+  new WithNBreakpoints(8) ++
+  new boom.common.WithNSmallBooms(1) ++
+  new WithNBigCores(1)   ++ //btb,FPU automatically enabled
+  new WithNBigNonBlockingCores(1)   ++ //1 MSHR register
+  new WithNBigNoMulDivCores(1) ++ //Without MulDiv 
+  new WithNBigNoDivSqrtCores(1) ++ //Without DivSqrt in FPU
+  new WithNBigNoMulDivSqrtCores(1) ++ //Without MulDiv and DivSqrt
+  new WithNBigNoBTBCores(1)  ++ //btb disabled
+  new RocketBaseConfig) 
+
+  class Rocket64bmix2 extends Config(
+  new WithNBreakpoints(8) ++
+  new boom.common.WithNSmallBooms(1) ++
+  new WithNBig1WayCores(1)   ++
+  new WithNBig2WayCores(1)   ++
+  new WithNBigCores(1)   ++ //btb,FPU automatically enabled
+  new WithNBig8WayCores(1)   ++
+  new WithNBig16WayCores(1)   ++
+  new WithNBigNoBTBCores(1)  ++ //btb disabled
+  new RocketBaseConfig)
+
+/* Kutalp's Config (Doesn't boot linux because of missing FPU in some cores) */ 
+class Rocket64bKutalp extends Config(
+  new WithNBreakpoints(8) ++
+  new boom.common.WithNSmallBooms(1) ++
+  new WithNBigCores(1)   ++ //btb,FPU automatically enabled
+  new WithNMedFPUCores(1)  ++ 
+  new WithNMedBTBCores(1)  ++
+  new WithNMedFPUBTBCores(1)  ++
+  new WithNMedCores(1)  ++
+  new RocketBaseConfig)
+
+/* Kutalp's Config Without Med Cores*/
+class Rocket64bKutalp2 extends Config(
+  new WithNBreakpoints(8) ++
+  new boom.common.WithNSmallBooms(1) ++
+  new WithNBigCores(1)   ++ //btb,FPU automatically enabled
+  new WithNBig8WayCores(1)   ++
+  new WithNBig16WayCores(1)   ++
   new RocketBaseConfig)
 
 /*----------------- Sonic BOOM   ---------------*/
